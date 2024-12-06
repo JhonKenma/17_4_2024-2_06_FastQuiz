@@ -83,7 +83,7 @@ public class RespuestaCuestionarioService {
         return respuestasDTO;
     }
 
-    // Método para comparar respuestas seleccionadas con respuestas correctas
+    // Método para comparar respuestas seleccionadas con respuestas correctas-------- utilizar para la retroalimentación-------------------
     public List<ResultadoComparacionDTO> compararRespuestasConCorrectas(Long cuestionarioId) {
         // Obtener respuestas seleccionadas por el usuario
         List<RespuestaCuestionarioDTO.PreguntaRespuestaDTO> respuestasUsuario = obtenerRespuestasPorCuestionario(cuestionarioId);
@@ -92,8 +92,10 @@ public class RespuestaCuestionarioService {
             throw new IllegalArgumentException("No se encontraron respuestas para el cuestionario");
         }
 
-        // Obtener respuestas correctas desde el JSON
-        Long idPreguntaReal = respuestasUsuario.get(1).getIdRealPregunta();
+        // Obtener el ID de la pregunta, restando 1 al cuestionarioId
+        Long idPreguntaReal = respuestasUsuario.get(Math.toIntExact(cuestionarioId - 1)).getIdRealPregunta();
+
+        // Obtener las respuestas correctas desde el JSON
         Map<String, String> respuestasCorrectas = obtenerRespuestasCorrectasDePregunta(idPreguntaReal);
 
         // Lista para almacenar los resultados de la comparación

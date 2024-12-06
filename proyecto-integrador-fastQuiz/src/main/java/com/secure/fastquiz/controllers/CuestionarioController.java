@@ -2,6 +2,7 @@ package com.secure.fastquiz.controllers;
 
 import com.secure.fastquiz.dtos.CuestionarioDTO;
 import com.secure.fastquiz.dtos.RespuestaCuestionarioDTO;
+import com.secure.fastquiz.dtos.ResultadoComparacionDTO;
 import com.secure.fastquiz.models.Cuestionario;
 import com.secure.fastquiz.models.PublicacionCuestionario;
 import com.secure.fastquiz.service.CuestionarioService;
@@ -136,6 +137,33 @@ public class CuestionarioController {
 
         // Retornar una respuesta vacía con un código de estado 200 OK
         return ResponseEntity.ok().build();
+    }
+
+    //------------------------------------------------------
+    // Endpoint para obtener las respuestas por cuestionario
+    @GetMapping("/cuestionario/{cuestionarioId}")
+    public ResponseEntity<List<RespuestaCuestionarioDTO.PreguntaRespuestaDTO>> obtenerRespuestasPorCuestionario(
+            @PathVariable Long cuestionarioId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<RespuestaCuestionarioDTO.PreguntaRespuestaDTO> respuestas = respuestaCuestionarioService.obtenerRespuestasPorCuestionario(cuestionarioId);
+        return new ResponseEntity<>(respuestas, HttpStatus.OK);
+    }
+
+    //Metodo para obtener el resultado del cuestionario----------------usar para la retroalimentación-------
+    @GetMapping("/comparar-cuestionario/{cuestionarioId}")
+    public ResponseEntity<List<ResultadoComparacionDTO>> compararCuestionario(
+            @PathVariable Long cuestionarioId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<ResultadoComparacionDTO> resultados = respuestaCuestionarioService.compararRespuestasConCorrectas(cuestionarioId);
+        return new ResponseEntity<>(resultados, HttpStatus.OK);
     }
 
 }

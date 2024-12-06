@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +25,8 @@ public class ChatGptController {
     private PreguntaService preguntaService;
 
     @PostMapping("/prompt")
-    public ResponseEntity<List<Pregunta>> promptOpenAi(@RequestBody Map<String, String> request,
-                                                       @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Map<String, String>> promptOpenAi(@RequestBody Map<String, String> request,
+                                                            @AuthenticationPrincipal UserDetails userDetails) {
         // Verificar si el usuario está autenticado
         if (userDetails == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Si no está autenticado
@@ -33,8 +34,15 @@ public class ChatGptController {
 
         String prompt = request.get("prompt");
         List<Pregunta> preguntas = chatGptService.sendPrompt(prompt);
-        return new ResponseEntity<>(preguntas, HttpStatus.OK);
+
+        // Crear un mensaje de éxito
+        Map<String, String> responseMessage = new HashMap<>();
+        responseMessage.put("message", "Las preguntas, alternativas y respuestas correctas fueron creadas con éxito.");
+
+        // Retornar el mensaje de éxito
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
+
 
     @GetMapping("/preguntas/{id}")
     public ResponseEntity<List<String>> obtenerTodasLasPreguntas(@PathVariable Long id,

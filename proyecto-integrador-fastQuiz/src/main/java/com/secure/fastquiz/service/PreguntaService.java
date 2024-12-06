@@ -111,6 +111,4 @@ public class PreguntaService {
         return null; // Devuelve null si no se encuentra la pregunta o las respuestas correctas
     }
 
-
-
 }

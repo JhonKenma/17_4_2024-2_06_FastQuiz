@@ -88,8 +88,6 @@ public class ChatGptService {
                             alternativas.put("b", line.substring(2).trim());
                         } else if (line.startsWith("c)")) {
                             alternativas.put("c", line.substring(2).trim());
-                        } else if (line.startsWith("d)")) { // NUEVA ALTERNATIVA
-                            alternativas.put("d", line.substring(2).trim());
                         } else if (line.startsWith("Respuesta correcta:")) {
                             respuestaCorrecta = line.substring("Respuesta correcta:".length()).trim();
                         }
@@ -125,8 +123,7 @@ public class ChatGptService {
             // Guardar todas las entidades relacionadas
             preguntaRepository.save(pregunta);
 
-            // Retornar la pregunta con alternativas y respuesta correcta
-            return List.of(pregunta); // Aquí retornamos la pregunta recién creada
+            return List.of(pregunta);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.TOO_MANY_REQUESTS) {
                 throw new RuntimeException("Demasiadas solicitudes, por favor intenta más tarde.");
@@ -136,5 +133,6 @@ public class ChatGptService {
             throw new RuntimeException("Error al procesar la respuesta de la API", e);
         }
     }
+
 
 }
